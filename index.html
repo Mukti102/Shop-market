@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="src/output.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Poppins:ital,wght@0,700;0,800;1,700&family=Roboto+Slab&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="fontawesome-free-6.4.0-web/css/all.css" />
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <div id="app">
+      <!-- header -->
+      <header class="fixed w-full bg-[rgba(0,0,0,0.5)] px-3 py-4 border border-b-0 border-zinc-900 shadow-lg backdrop-blur-sm z-50 lg:backdrop-blur-lg">
+        <div class="flex justify-between">
+          <div>
+            <h1 class="text-slate-200 font-bold text-1xl italic lg:text-2xl">Shop<span class="text-primary">Market</span></h1>
+          </div>
+
+          <div class="flex items-center">
+            <div id="menu" class="w-max px-9 py-2 bg-white text-black  h-screen top-14 absolute text-center lg:w-full lg:static lg:h-max lg:bg-transparent transition-all duration-500 ease-in-out lg:flex" :class="toggle">
+              <ul class="block lg:flex">
+                <li class="lg:mr-7">
+                  <a
+                    href="#Home"
+                    class="text-slate-500 text-xs lg:text-lg font-semibold after:content-[''] after:w-full after:bg-primary after:h-[2px] after:block after:scale-0 hover:after:scale-100 hover:after:duration-300 hover:text-primary hover:duration-300 lg:text-white"
+                    >Home</a
+                  >
+                </li>
+                <li class="lg:mr-7">
+                  <a
+                    href="#About"
+                    class="text-slate-500 text-xs lg:text-lg  font-semibold after:content-[''] after:w-full after:bg-primary after:h-[2px] after:block after:scale-0 hover:after:scale-100 hover:after:duration-300 hover:text-primary hover:duration-300 lg:text-white"
+                    >About</a
+                  >
+                </li>
+                <li class="lg:mr-7">
+                  <a
+                    href="#product"
+                    class="text-slate-500  text-xs lg:text-lg font-semibold after:content-[''] after:w-full after:bg-primary after:h-[2px] after:block after:scale-0 hover:after:scale-100 hover:after:duration-300 hover:text-primary hover:duration-300 lg:text-white"
+                    >Product</a
+                  >
+                </li>
+                <li class="lg:mr-7">
+                  <a
+                    href="#Contact"
+                    class="text-slate-500 text-xs lg:text-lg font-semibold after:content-[''] after:w-full after:bg-primary after:h-[2px] after:block after:scale-0 hover:after:scale-100 hover:after:duration-300 hover:text-primary hover:duration-300 lg:text-white"
+                    >Contact</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <div class="flex relative mr-2">
+              <p class="text-xs font-sans mr-1 text-white pt-[2px]">{{checkTotal |currently}} </p>
+              <span  class="cursor-pointer inline-block" @click.stop="style.slide = !style.slide" @click="style.animated = !style.animated">
+                <i class="fas fa-cart-shopping fa-flip-horizontal text-slate-200 hover:text-primary relative lg:text-3xl">
+                </i>
+                <div v-if="cart.length > 0">
+                  <span class="w-[13px] h-[13px] lg:w-[18px] lg:h-[18px] bg-green-500 rounded-full p-[3px] absolute -top-2 -right-1 animate-ping":class="ping">
+                  </span>
+                  <span class="font-semibold absolute text-slate-200 -top-2 -right-1 text-[9px] lg:text-[14px] bg-green-500 px-[3px] lg:px-[5px] lg:py-[1px] w-max h-max rounded-full text-center">{{checkQty}}</span>
+                </div>
+              </span>
+            </div>
+            <div class="ml-2">
+              <span class="cursor-pointer lg:hidden" id="hamburger">
+                <i class="fa-solid fa-bars hover:text-primary font-semibold text-slate-100" @click="style.hamburger = !style.hamburger"></i>
+              </sp>
+            </div>
+          </div>
+        </div>
+        <div class=" block bg-white rounded-sm h-max absolute right-0 left-0 m-1 shadow-xl lg:px-4 lg:mx-7">
+          <div class="p-2 justify-between  transition-all duration-500 ease-in-out items-center" :class="show">
+            <span class="font-bold lg:font-bold text-[9px] font-sans w-max h-max  text-center rounded-full mr-0 px-[5px] py-[2px] lg:text-lg lg:w-8 lg:h-8 lg:flex lg:items-center lg:text-center">Quantity</span>
+            <p class="font-sans text-[9px] ml-1 text-center lg:text-lg font-bold lg:font-bold">Name</p>
+            <b class="text-[9px] ml-2 text-center lg:text-lg">Harga</b>
+            <button class=" text-[9px] ml-2 text-center cursor-pointer outline-none lg:text-lg" @click.stop="deleteItem(index)">Delete</button>
+           </div>
+          <div class="p-2 justify-between  transition-all duration-500 ease-in-out items-center" v-for="(item,index) in cart" :class="show">
+           <span class="bg-primary text-[9px] font-sans text-center rounded-full mr-0 px-[5px] py-[2px] lg:text-lg lg:w-8 lg:h-8 lg:flex lg:items-center lg:text-center">{{item.qty}}</span>
+           <p class="font-sans text-[9px] ml-1 text-center lg:text-lg">{{item.product.name}}</p>
+           <p class="font-semibold text-[9px] ml-2 text-center lg:text-lg">{{item.product.price * item.qty | currently}}</p>
+           <button class="font-bold text-xs ml-2 text-slate-600 text-center cursor-pointer outline-none lg:text-2xl lg:text-slate-500" @click.stop="deleteItem(index)"><i class="fas fa-trash hover:text-yello-600"></i></button>
+          </div>
+        </div>
+      </header>
+
+      <!-- hero -->
+      <div
+        id="Home"
+        class="w-full h-96 bg-no-repeat bg-[center_top_0.1rem] bg-cover flex items-center lg:h-[655px] lg:bg-[center_top_0.1rem] relative lg:after:content-[''] lg:after:w-full lg:after:h-[200px] lg:after:bg-gradient-to-t from-slate-800 to-transparent lg:after:block lg:after:absolute lg:after:bottom-0 after:content-[''] after:w-full after:h-[100px] after:bg-gradient-to-t after:block after:absolute after:bottom-0"
+        style="background-image: url('./svg/c-d-x-PDX_a_82obo-unsplash.jpg')"
+      >
+        <div class="w-full h-full bg-[rgba(0,0,0,0.3)] flex items-center px-3">
+          <div class="lg:px-20">
+            <h1 class="font-bold text-[20px] w-full text-white lg:text-5xl lg:leading-normal">
+              Simpan jika di perlukan <br />
+              Bagikan bagi mereka yang <span class="text-primary lg:text-7xlxl lg:block lg:leading-normal">Membutuhkan</span>
+            </h1>
+            <a href="#" class="block bg-primary w-max px-4 py-2 text-slate-900 font-semibold mt-8 shadow-lg hover:opacity-80 lg:text-lg lg:px-4 lg:py-3 rounded-sm lg:animate-bounce animate-bounce">Order Here</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- about -->
+      <section id="About" class="bg-slate-800 flex lg:w-full">
+        <div class="w-full lg:m-auto px-5 py-10 lg:w-full">
+          <div class="text-center">
+            <h1 class="font-bold text- text-slate-200 lg:text-2xl">What will you get if you order here</h1>
+            <p class="text-[10px] text-slate-400 lg:text-sm lg:mt-3">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Hic autem earum nobis magni officia perferendis!</p>
+          </div>
+          <div class="w-full mt-4 lg:flex lg:mt-16 lg:w-full">
+            <div class="text-center lg:mx-4 lg:flex-1">
+              <i class="fas fa-truck-fast m-2 bg-yellow-600 p-3 rounded-full text-white lg:text-2xl lg:p-4"></i>
+              <p class="text-[12px] m-2 text-slate-200 lg:text-lg">Fast delivery</p>
+              <p class="text-[9px] text-slate-400 lg:text-xs">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis, molestiae.</p>
+            </div>
+            <div class="text-center lg:mx-4 lg:flex-1">
+              <i class="fas fa-wallet m-2 bg-yellow-600 p-3 rounded-full text-white lg:text-2xl lg:p-4"></i>
+              <p class="text-[12px] m-2 text-slate-200 lg:text-lg">COD</p>
+              <p class="text-[9px] text-slate-400 lg:text-xs">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis, molestiae.</p>
+            </div>
+            <div class="text-center lg:mx-4 lg:flex-1">
+              <i class="fas fa-boxes-packing m-2 bg-yellow-600 p-3 rounded-full text-white lg:text-2xl lg:p-4"></i>
+              <p class="text-[12px] m-2 text-slate-200 lg:text-lg">Boxes packing</p>
+              <p class="text-[9px] text-slate-400 lg:text-xs">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis, molestiae.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- product -->
+      <section id="product" class="w-full bg-slate-800">
+        <div class="w-full p-1 mx-auto pt-10">
+          <div class="mb-4 lg:ml-16">
+            <label for="max" class="text-sm lg:text-lg text-white block">Max :</label>
+            <input type="Number" class="border border-slate-400 outline-none bg-slate-200 rounded-sm text-slate-700 px-2 py-2 h-6 w-[100px] text-xs lg:h-7 lg:text-lg lg:w-[200px]" id="max" v-model="max" />
+          </div>
+          <div class="flex flex-wrap justify-center">
+            <div class="flex flex-wrap lg:flex lg:justify-center" v-for="(item,index) in product" v-if="item.price < max">
+              <div class="pt-[7px] lg:px-[13px] px-[6px] pb-[6px] lg:pt-3  bg-black w-28 h-max rounded-sm lg:w-56 lg:mb-12 mb-2 lg:mr-2 flex-auto mr-1  lg:shadow-slate-700 border border-slate-300">
+                <div class="w-full h-max overflow-hidden bg-white mb-2 lg:h-60 lg:bg-white">
+                  <img :src="item.image" alt=""/>
+                </div>
+                <div>
+                  <h1 class="text-[11px] text-slate-200 lg:text-lg">{{item.name}}</h1>
+                  <p class="text-[10px] mt-2 text-primary lg:text-sm">{{item.price | currently}}</p>
+                </div>
+                <div class="w-full text-end mt-6">
+                  <button type="button" class="text-xs p-1 rounded-full font-sans lg:outline-none text-center"><i class="fas fa-cart-arrow-down fa-flip-horizontal text-white text-[13px] lg:text-2xl lg:text-white hover:text-primary"
+                    @click="addItem(item)" @click="style.animated = !style.animated"></i></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- contact -->
+      <section id="contact" class="w-full h-max bg-slate-900 text-center py-2 lg:bg-slate-900 lg:pt-6">
+        <h1 class="text-slate-200 mb-1 lg:text-2xl">Contact <span class="text-primary">me</span></h1>
+        <p class="text-slate-400 text-[10px] lg:text-sm">Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere laudantium eligendi</p>
+        <div class="w-full py-4 px-3 block lg:flex lg:mt-4">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d505287.353007116!2d113.26685585750204!3d-8.346692284881074!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd699e31fb22e71%3A0x3027a76e352bd10!2sJember%2C%20Kaliwates%2C%20Jember%20Regency%2C%20East%20Java!5e0!3m2!1sen!2sid!4v1674060486678!5m2!1sen!2sid" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="lg:flex-auto lg:w-1/2 border border-white mx-auto"></iframe>
+          <form class="px-5 py-4 w-full lg:w-1/2 rounded-md mt-4 lg:flex-none">
+            <div class="w-full flex h-max border border-slate-300 rounded-sm px-3 py-2 items-center bg-slate-950 my-2">
+              <label for="user" class="text-white text-sm mr-2 lg:text-xl"><i class="fa-regular fa-user"></i></label>
+              <input type="text" id="user"  placeholder="Username" class="w-full h-full bg-transparent px-2 text-xs font-sans outline-none text-white lg:py-4 lg:text-lg">
+            </div>
+            <div class="w-full flex h-max border border-slate-300 rounded-sm px-3 py-2 items-center bg-slate-950 my-5">
+              <label for="Email" class="text-white text-sm mr-2 lg:text-xl"><i class="fa-regular fa-envelope"></i></label>
+              <input type="email" id="Email"  placeholder="Email" class="w-full h-full bg-transparent px-2 text-xs font-sans outline-none text-white lg:py-4 lg:text-lg">
+            </div>
+            <div class="w-full flex h-20 border border-slate-300 rounded-sm px-1 py-1 items-start bg-slate-950 my-5 lg:h-32 lg:px-2 lg:py-0">
+              <textarea type="text" id="user"  placeholder="Message..." class="w-full h-7 bg-transparent text-xs font-sans outline-none text-white lg:py-4 lg:text-lg lg:h-full "></textarea>
+            </div>
+            <button class="px-4 py-[6px] bg-yellow-600 text-white text-xs hover:bg-yellow-700 rounded-sm lg:text-lg lg:px-6 lg:py-2">Send</button>
+          </form>
+        </div>
+      </section>
+      <!-- modal -->
+      
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
+  </body>
+  <script src="main.js"></script>
+</html>
